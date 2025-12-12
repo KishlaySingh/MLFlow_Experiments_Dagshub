@@ -56,6 +56,14 @@ if __name__ == "__main__":
     alpha = float(sys.argv[1]) if len(sys.argv) > 1 else 0.5
     l1_ratio = float(sys.argv[2]) if len(sys.argv) > 2 else 0.5
 
+    
+    ## For Remote server only(DAGShub)
+    remote_server_uri = "https://dagshub.com/KishlaySingh/MLFlow_Experiments_Dagshub.mlflow"
+    os.environ["MLFLOW_TRACKING_USERNAME"] = "KishlaySingh"
+    os.environ["MLFLOW_TRACKING_PASSWORD"] = "764961a107728eb68e7b19e022337aec428a1b31"
+    mlflow.set_tracking_uri(remote_server_uri)
+
+    mlflow.set_experiment("WineQuality")
     with mlflow.start_run():
         lr = ElasticNet(alpha=alpha, l1_ratio=l1_ratio, random_state=42)
         lr.fit(train_x, train_y)
@@ -78,13 +86,9 @@ if __name__ == "__main__":
         #predictions = lr.predict(train_x)
         #signature = infer_signature(train_x, predictions)
 
-        ## For Remote server only(DAGShub)
 
-        remote_server_uri="https://github.com/KishlaySingh/MLFlow_Experiments_Dagshub.git"
-        mlflow.set_tracking_uri(remote_server_uri)
-
+     
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
-
         # Model registry does not work with file store
         if tracking_url_type_store != "file":
             # Register the model
